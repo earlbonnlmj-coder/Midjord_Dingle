@@ -35,10 +35,22 @@ fun GameScreen() {
     var userAnswer by remember {
         mutableStateOf("")
     }
-    // Phase 3: Added the expected answer (val - does not change)
-    val correctAnswer = "CAT"
 
-    // Phase 3: Added score state (var - changes dynamically)
+    // Phase 4: Replaced single answer with a list of words
+    val words = listOf(
+        "CAT",
+        "DOG",
+        "BOOK"
+    )
+
+    // Phase 4: Added index state to track the active word
+    var currentWordIndex by remember {
+        mutableStateOf(0)
+    }
+
+    // Phase 4: Derived current correct answer based on list index
+    val correctAnswer = words[currentWordIndex]
+
     var score by remember {
         mutableStateOf(0)
     }
@@ -52,8 +64,9 @@ fun GameScreen() {
             text = "UNSCRAMBLE",
             fontSize = 30.sp
         )
+        // Phase 4: Displays current word (not scrambled yet)
         Text(
-            text = "TAC",
+            text = correctAnswer,
             fontSize = 40.sp
         )
         Text(
@@ -68,17 +81,20 @@ fun GameScreen() {
                 Text("Enter your answer")
             }
         )
-        // Phase 3: Check if userAnswer matches correctAnswer upon click
         Button(
             onClick = {
                 if (userAnswer == correctAnswer) {
                     score++
+                    // Phase 4: Move to next word and clear field (prevent bounds overflow)
+                    if (currentWordIndex < words.size - 1) {
+                        currentWordIndex++
+                        userAnswer = ""
+                    }
                 }
             }
         ) {
             Text("SUBMIT")
         }
-        // Phase 3: Bind score state dynamically using String template
         Text(
             text = "Score: $score"
         )
