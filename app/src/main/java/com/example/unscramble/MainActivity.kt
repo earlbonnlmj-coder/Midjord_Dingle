@@ -32,9 +32,15 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GameScreen() {
-    // Phase 2: Introduced mutable state to store user input
     var userAnswer by remember {
         mutableStateOf("")
+    }
+    // Phase 3: Added the expected answer (val - does not change)
+    val correctAnswer = "CAT"
+
+    // Phase 3: Added score state (var - changes dynamically)
+    var score by remember {
+        mutableStateOf(0)
     }
 
     Column(
@@ -53,7 +59,6 @@ fun GameScreen() {
         Text(
             text = "Unscramble the word!"
         )
-        // Phase 2: Connected value and onValueChange to userAnswer state
         OutlinedTextField(
             value = userAnswer,
             onValueChange = {
@@ -63,13 +68,19 @@ fun GameScreen() {
                 Text("Enter your answer")
             }
         )
+        // Phase 3: Check if userAnswer matches correctAnswer upon click
         Button(
-            onClick = { }
+            onClick = {
+                if (userAnswer == correctAnswer) {
+                    score++
+                }
+            }
         ) {
             Text("SUBMIT")
         }
+        // Phase 3: Bind score state dynamically using String template
         Text(
-            text = "Score: 0"
+            text = "Score: $score"
         )
     }
 }
