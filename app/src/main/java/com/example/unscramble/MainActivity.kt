@@ -10,13 +10,10 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.unscramble.ui.theme.UnscrambleTheme
 
 class MainActivity : ComponentActivity() {
@@ -32,31 +29,8 @@ class MainActivity : ComponentActivity() {
 
 @Composable
 fun GameScreen() {
-    var userAnswer by remember {
-        mutableStateOf("")
-    }
-
-    val words: List<String> = listOf(
-        "CAT",
-        "DOG",
-        "BOOK"
-    )
-
-    var currentWordIndex by remember {
-        mutableStateOf(0)
-    }
-
-    val correctAnswer = words[currentWordIndex]
-
-    var scrambledWord by remember {
-        mutableStateOf<String>(
-            words[0].toList().shuffled().joinToString("")
-        )
-    }
-
-    var score by remember {
-        mutableStateOf(0)
-    }
+    // Phase 6: Obtain instance of GameViewModel
+    val viewModel: GameViewModel = viewModel()
 
     Column(
         modifier = Modifier.fillMaxSize(),
@@ -67,41 +41,29 @@ fun GameScreen() {
             text = "UNSCRAMBLE",
             fontSize = 30.sp
         )
+        // Phase 6: Read word directly from ViewModel
         Text(
-            text = scrambledWord,
+            text = viewModel.words[viewModel.currentWordIndex],
             fontSize = 40.sp
         )
         Text(
             text = "Unscramble the word!"
         )
         OutlinedTextField(
-            value = userAnswer,
-            onValueChange = {
-                userAnswer = it
-            },
+            value = viewModel.userAnswer,
+            onValueChange = { },
             label = {
                 Text("Enter your answer")
             }
         )
         Button(
-            onClick = {
-                if (userAnswer == correctAnswer) {
-                    score++
-                    if (currentWordIndex < words.size - 1) {
-                        currentWordIndex++
-                        userAnswer = ""
-                        scrambledWord = words[currentWordIndex]
-                            .toList()
-                            .shuffled()
-                            .joinToString("")
-                    }
-                }
-            }
+            onClick = { }
         ) {
             Text("SUBMIT")
         }
+        // Phase 6: Read score directly from ViewModel
         Text(
-            text = "Score: $score"
+            text = "Score: ${viewModel.score}"
         )
     }
 }
