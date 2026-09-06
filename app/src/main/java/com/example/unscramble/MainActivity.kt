@@ -36,20 +36,23 @@ fun GameScreen() {
         mutableStateOf("")
     }
 
-    // Phase 4: Replaced single answer with a list of words
-    val words = listOf(
+    val words: List<String> = listOf(
         "CAT",
         "DOG",
         "BOOK"
     )
 
-    // Phase 4: Added index state to track the active word
     var currentWordIndex by remember {
         mutableStateOf(0)
     }
 
-    // Phase 4: Derived current correct answer based on list index
     val correctAnswer = words[currentWordIndex]
+
+    var scrambledWord by remember {
+        mutableStateOf<String>(
+            words[0].toList().shuffled().joinToString("")
+        )
+    }
 
     var score by remember {
         mutableStateOf(0)
@@ -64,9 +67,8 @@ fun GameScreen() {
             text = "UNSCRAMBLE",
             fontSize = 30.sp
         )
-        // Phase 4: Displays current word (not scrambled yet)
         Text(
-            text = correctAnswer,
+            text = scrambledWord,
             fontSize = 40.sp
         )
         Text(
@@ -85,10 +87,13 @@ fun GameScreen() {
             onClick = {
                 if (userAnswer == correctAnswer) {
                     score++
-                    // Phase 4: Move to next word and clear field (prevent bounds overflow)
                     if (currentWordIndex < words.size - 1) {
                         currentWordIndex++
                         userAnswer = ""
+                        scrambledWord = words[currentWordIndex]
+                            .toList()
+                            .shuffled()
+                            .joinToString("")
                     }
                 }
             }
